@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Enviar Recibo</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>📷 Recibo Fácil</h1>
+
+<input type="file" id="imagem" accept="image/*" capture="environment">
+
+<br><br>
+
+<div id="codigo">
+Nenhum código encontrado
+</div>
+
+<br>
+
+<button id="enviar">
+Enviar
+</button>
+
+<p id="status">
+Aguardando imagem...
+</p>
+
+</div>
+
+<script src="supabase.js"></script>
+<script src="ocr.js"></script>
+<script src="celular.js"></script>
+
+</body>
+</html>
