@@ -1,43 +1,20 @@
-const inputImagem = document.getElementById("imagem");
-const codigoDiv = document.getElementById("codigo");
-const status = document.getElementById("status");
+const linhas = text.split("\n");
 
-let codigoEncontrado = "";
+const linhaID = linhas.find(l =>
+    l.toUpperCase().includes("ID:")
+);
 
-inputImagem.addEventListener("change", async () => {
+if (!linhaID) {
+    codigoEncontrado = "";
+    codigoDiv.innerText = "ID não encontrado";
+    status.innerText = "❌";
+    return;
+}
 
-    const arquivo = inputImagem.files[0];
+codigoEncontrado = linhaID
+    .replace(/ID:/i, "")
+    .replace(/\s/g, "")
+    .trim();
 
-    if (!arquivo) return;
-
-    status.innerText = "🔍 Lendo recibo...";
-
-    const {
-        data: { text }
-    } = await Tesseract.recognize(
-        arquivo,
-        "por"
-    );
-
-    // Procura números entre 16 e 20 dígitos
-    const numeros = text.match(/\d{16,20}/g);
-
-    if (!numeros || numeros.length === 0) {
-
-        codigoEncontrado = "";
-
-        codigoDiv.innerText = "Nenhum código encontrado";
-
-        status.innerText = "❌ Código não localizado";
-
-        return;
-    }
-
-    // Pega o maior número encontrado
-    codigoEncontrado = numeros.sort((a,b)=>b.length-a.length)[0];
-
-    codigoDiv.innerText = codigoEncontrado;
-
-    status.innerText = "✅ Código encontrado";
-
-});
+codigoDiv.innerText = codigoEncontrado;
+status.innerText = "✅ ID encontrado";
