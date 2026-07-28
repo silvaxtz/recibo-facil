@@ -65,3 +65,36 @@ button:hover{
     color:#666;
     font-size:14px;
 }
+video{
+
+width:100%;
+border-radius:15px;
+border:3px solid #2563eb;
+
+}
+
+.moldura{
+
+margin:15px auto;
+
+width:90%;
+
+height:140px;
+
+border:3px dashed red;
+
+border-radius:10px;
+
+margin-top:-170px;
+
+pointer-events:none;
+
+position:relative;
+
+}
+
+#capturar{
+
+margin-top:50px;
+
+}
