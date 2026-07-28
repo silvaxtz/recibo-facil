@@ -64,11 +64,11 @@ async function lerComprovante(imagem){
 
     status.innerText="☁️ Enviando...";
 
-    const { error } = await supabase
+    const { error } = await db
     .from("codigos")
     .insert([
         {
-            codigo:codigo
+            codigo: codigo
         }
     ]);
 
