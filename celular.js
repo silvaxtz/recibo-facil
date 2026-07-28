@@ -8,28 +8,25 @@ async function iniciarCamera() {
     try {
 
         const stream = await navigator.mediaDevices.getUserMedia({
-
-            video:{
-                facingMode:{
-                    ideal:"environment"
-                }
+            video: {
+                facingMode: { ideal: "environment" },
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
             },
-
-            audio:false
-
+            audio: false
         });
 
         video.srcObject = stream;
 
+        await video.play();
+
         status.innerText = "📷 Câmera pronta";
 
-    } catch (erro) {
+    } catch (e) {
 
-        console.error(erro);
+        console.error(e);
 
-        status.innerText = "❌ Erro ao abrir câmera";
-
-        alert("Não foi possível acessar a câmera.");
+        status.innerText = "Erro ao abrir câmera";
 
     }
 
@@ -37,31 +34,41 @@ async function iniciarCamera() {
 
 iniciarCamera();
 
-capturar.onclick = async ()=>{
+capturar.onclick = async () => {
 
-    status.innerText="📸 Capturando...";
+    status.innerText = "Capturando...";
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-   ctx.drawImage(video, 0, 0);
+    const ctx = canvas.getContext("2d");
 
-const corte = document.createElement("canvas");
-const c = corte.getContext("2d");
+    ctx.drawImage(video, 0, 0);
 
-// Ajuste estes valores conforme a posição do ID
-const x = canvas.width * 0.08;
-const y = canvas.height * 0.72;
-const w = canvas.width * 0.84;
-const h = canvas.height * 0.12;
+    // Região onde fica o ID
+    const corte = document.createElement("canvas");
+    const c = corte.getContext("2d");
 
-corte.width = w;
-corte.height = h;
+    const x = canvas.width * 0.05;
+    const y = canvas.height * 0.67;
+    const w = canvas.width * 0.90;
+    const h = canvas.height * 0.18;
 
-c.drawImage(
-    canvas,
-    x, y, w, h,
-    0, 0, w, h
-);
+    corte.width = w * 3;
+    corte.height = h * 3;
 
-await lerComprovante(corte);
+    c.drawImage(
+        canvas,
+        x,
+        y,
+        w,
+        h,
+        0,
+        0,
+        corte.width,
+        corte.height
+    );
+
+    await lerComprovante(corte);
+
+};
