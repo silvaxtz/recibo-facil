@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Enviar Recibo</title>
+<title>Recibo Fácil</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -16,24 +17,28 @@
 
 <div class="container">
 
-<h1>📷 Recibo Fácil</h1>
+<h1>📄 Recibo Fácil</h1>
 
-<input type="file" id="imagem" accept="image/*" capture="environment">
+<video id="camera" autoplay playsinline></video>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<div class="moldura"></div>
+
+<br>
+
+<button id="capturar">
+📷 Capturar
+</button>
 
 <br><br>
 
 <div id="codigo">
-Nenhum código encontrado
+Aguardando...
 </div>
 
-<br>
-
-<button id="enviar">
-Enviar
-</button>
-
 <p id="status">
-Aguardando imagem...
+Abrindo câmera...
 </p>
 
 </div>
