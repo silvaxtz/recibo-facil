@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Recibo Fácil</title>
+<title>Recibo Fácil - Celular</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -17,24 +17,29 @@
 
 <div class="container">
 
-<h1>📄 Recibo Fácil</h1>
+<h1>📷 Recibo Fácil</h1>
 
-<video id="camera" autoplay playsinline></video>
+<div class="camera-box">
+
+<video
+id="camera"
+autoplay
+playsinline
+muted
+></video>
+
+<div class="guia"></div>
+
+</div>
 
 <canvas id="canvas" style="display:none;"></canvas>
 
-<div class="moldura"></div>
-
-<br>
-
 <button id="capturar">
-📷 Capturar
+📷 Capturar Comprovante
 </button>
 
-<br><br>
-
 <div id="codigo">
-Aguardando...
+Aguardando leitura...
 </div>
 
 <p id="status">
