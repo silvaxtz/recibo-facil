@@ -44,10 +44,24 @@ capturar.onclick = async ()=>{
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    const ctx = canvas.getContext("2d");
+   ctx.drawImage(video, 0, 0);
 
-    ctx.drawImage(video,0,0);
+const corte = document.createElement("canvas");
+const c = corte.getContext("2d");
 
-    await lerComprovante(canvas);
+// Ajuste estes valores conforme a posição do ID
+const x = canvas.width * 0.08;
+const y = canvas.height * 0.72;
+const w = canvas.width * 0.84;
+const h = canvas.height * 0.12;
 
-};
+corte.width = w;
+corte.height = h;
+
+c.drawImage(
+    canvas,
+    x, y, w, h,
+    0, 0, w, h
+);
+
+await lerComprovante(corte);
