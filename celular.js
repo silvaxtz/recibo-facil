@@ -1,23 +1,23 @@
 const video = document.getElementById("camera");
 const canvas = document.getElementById("canvas");
 const capturar = document.getElementById("capturar");
-const codigoDiv = document.getElementById("codigo");
 const status = document.getElementById("status");
 
-// Abre a câmera traseira
 async function iniciarCamera() {
-
-    alert("Tentando abrir a câmera");
 
     try {
 
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: "environment"
-            }
-        });
 
-        alert("Câmera aberta!");
+            video:{
+                facingMode:{
+                    ideal:"environment"
+                }
+            },
+
+            audio:false
+
+        });
 
         video.srcObject = stream;
 
@@ -25,53 +25,29 @@ async function iniciarCamera() {
 
     } catch (erro) {
 
-        alert("Erro: " + erro.message);
-
         console.error(erro);
 
-        status.innerText = erro.message;
+        status.innerText = "❌ Erro ao abrir câmera";
+
+        alert("Não foi possível acessar a câmera.");
 
     }
 
 }
-    // Procura a linha do ID
-    const linha = text
-        .split("\n")
-        .find(l => /[I1l][D0O]\s*:?/i.test(l));
 
-    if (!linha) {
+iniciarCamera();
 
-        codigoDiv.innerText = "ID não encontrado";
-        status.innerText = "❌";
+capturar.onclick = async ()=>{
 
-        return;
-    }
+    status.innerText="📸 Capturando...";
 
-    let codigo = linha
-        .replace(/[I1l][D0O]\s*:?/i, "")
-        .replace(/\s+/g, "")
-        .trim();
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-    codigoDiv.innerText = codigo;
+    const ctx = canvas.getContext("2d");
 
-    status.innerText = "☁️ Enviando...";
+    ctx.drawImage(video,0,0);
 
-    const { error } = await supabase
-        .from("codigos")
-        .insert([
-            {
-                codigo: codigo
-            }
-        ]);
+    await lerComprovante(canvas);
 
-    if (error) {
-
-        console.error(error);
-
-        status.innerText = "❌ Erro ao enviar";
-
-        return;
-    }
-
-    status.innerText = "✅ Enviado!";
-});
+};
