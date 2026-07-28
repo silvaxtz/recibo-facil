@@ -1,60 +1,73 @@
-async function lerComprovante(imagem){
+async function lerComprovante(canvas){
 
-    status.innerText = "🤖 Lendo comprovante...";
+    status.innerText = "Preparando imagem...";
+
+    const ctx = canvas.getContext("2d");
+
+    const img = ctx.getImageData(0,0,canvas.width,canvas.height);
+
+    const d = img.data;
+
+    for(let i=0;i<d.length;i+=4){
+
+        const media=(d[i]+d[i+1]+d[i+2])/3;
+
+        const cor = media>170 ? 255 : 0;
+
+        d[i]=cor;
+        d[i+1]=cor;
+        d[i+2]=cor;
+
+    }
+
+    ctx.putImageData(img,0,0);
+
+    status.innerText="Lendo ID...";
 
     const resultado = await Tesseract.recognize(
-        imagem,
+        canvas,
         "eng",
         {
-            logger: m => console.log(m)
+            logger:m=>console.log(m)
         }
     );
 
-    const texto = resultado.data.text;
+    let texto = resultado.data.text.toUpperCase();
 
     console.log(texto);
 
-    // Procura a linha que contém ID:
-    const linhas = texto.split("\n");
+    let codigo="";
 
-    let codigo = "";
+    const match = texto.match(/ID[:\s]*([A-Z0-9]+)/);
 
-    for(const linha of linhas){
+    if(match){
 
-        const limpa = linha.replace(/\s+/g," ");
+        codigo=match[1];
 
-        if(/ID/i.test(limpa)){
+    }
 
-            codigo = limpa
-                .replace(/.*ID[:\s]*/i,"")
-                .replace(/[^A-Z0-9]/gi,"")
-                .trim();
+    if(!codigo){
 
-            break;
+        const lista = texto.match(/[A-Z0-9]{30,60}/g);
+
+        if(lista){
+
+            codigo=lista[0];
 
         }
 
     }
 
-    // Caso não encontre pela palavra ID,
-    // procura um código alfanumérico grande.
-    if(codigo===""){
+    codigo=codigo
+        .replace(/ /g,"")
+        .replace(/\n/g,"")
+        .replace(/O/g,"0")
+        .replace(/I/g,"1")
+        .replace(/L/g,"1");
 
-        const encontrados = texto.match(/[A-Z0-9]{25,60}/g);
+    if(!codigo){
 
-        if(encontrados){
-
-            codigo = encontrados[0];
-
-        }
-
-    }
-
-    if(codigo===""){
-
-        document.getElementById("codigo").innerText="❌ ID não encontrado";
-
-        status.innerText="Tente aproximar mais o comprovante.";
+        status.innerText="ID não encontrado";
 
         return;
 
@@ -62,13 +75,13 @@ async function lerComprovante(imagem){
 
     document.getElementById("codigo").innerText=codigo;
 
-    status.innerText="☁️ Enviando...";
+    status.innerText="Enviando...";
 
-    const { error } = await db
+    const {error}=await db
     .from("codigos")
     .insert([
         {
-            codigo: codigo
+            codigo
         }
     ]);
 
@@ -76,11 +89,12 @@ async function lerComprovante(imagem){
 
         console.error(error);
 
-        status.innerText="❌ Erro ao enviar";
+        status.innerText="Erro ao enviar";
 
         return;
 
     }
 
-    status.innerText="✅ Enviado com sucesso!";
+    status.innerText="✅ Enviado";
+
 }
