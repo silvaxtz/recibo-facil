@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Recibo Fácil</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>📄 Recibo Fácil</h1>
+
+<h3>Último código recebido</h3>
+
+<div id="codigo">
+Aguardando...
+</div>
+
+<button id="copiar">
+📋 Copiar
+</button>
+
+<p id="status">
+Conectando...
+</p>
+
+</div>
+
+<script src="supabase.js"></script>
+<script src="notebook.js"></script>
+
+</body>
+</html>
