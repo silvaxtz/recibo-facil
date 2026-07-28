@@ -6,43 +6,34 @@ const status = document.getElementById("status");
 
 // Abre a câmera traseira
 async function iniciarCamera() {
+
+    alert("Tentando abrir a câmera");
+
     try {
+
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
-                facingMode: {
-                    ideal: "environment"
-                }
-            },
-            audio: false
+                facingMode: "environment"
+            }
         });
 
+        alert("Câmera aberta!");
+
         video.srcObject = stream;
+
         status.innerText = "📷 Câmera pronta";
-    } catch (e) {
-        console.error(e);
-        status.innerText = "❌ Não foi possível abrir a câmera";
+
+    } catch (erro) {
+
+        alert("Erro: " + erro.message);
+
+        console.error(erro);
+
+        status.innerText = erro.message;
+
     }
+
 }
-
-iniciarCamera();
-
-capturar.addEventListener("click", async () => {
-
-    status.innerText = "🔍 Lendo recibo...";
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    const ctx = canvas.getContext("2d");
-
-    ctx.drawImage(video, 0, 0);
-
-    const {
-        data: { text }
-    } = await Tesseract.recognize(canvas, "eng");
-
-    console.log(text);
-
     // Procura a linha do ID
     const linha = text
         .split("\n")
