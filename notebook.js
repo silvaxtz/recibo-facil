@@ -4,8 +4,9 @@ const copiar = document.getElementById("copiar");
 
 let ultimoCodigo = "";
 
-// Carrega o último código salvo
-async function carregarUltimoCodigo() {
+// Carrega o último ID
+async function carregarUltimo() {
+
     const { data, error } = await supabase
         .from("codigos")
         .select("*")
@@ -13,45 +14,58 @@ async function carregarUltimoCodigo() {
         .limit(1);
 
     if (!error && data.length > 0) {
+
         ultimoCodigo = data[0].codigo;
-        codigoDiv.textContent = ultimoCodigo;
+        codigoDiv.innerText = ultimoCodigo;
+
     }
 
-    status.textContent = "🟢 Conectado";
+    status.innerText = "🟢 Conectado";
 }
 
-carregarUltimoCodigo();
+carregarUltimo();
 
-// Escuta novos códigos em tempo real
+// Escuta novos registros
 supabase
 .channel("codigos")
 .on(
     "postgres_changes",
     {
-        event: "*",
+        event: "INSERT",
         schema: "public",
         table: "codigos"
     },
-    (payload) => {
+    (payload)=>{
 
         ultimoCodigo = payload.new.codigo;
-        codigoDiv.textContent = ultimoCodigo;
+
+        codigoDiv.innerText = ultimoCodigo;
+
+        status.innerText = "✅ Novo ID recebido";
+
+        codigoDiv.style.background="#dcfce7";
+
+        setTimeout(()=>{
+            codigoDiv.style.background="#f5f5f5";
+        },2000);
 
     }
 )
 .subscribe();
 
-// Botão copiar
-copiar.onclick = async () => {
+// Copiar
+copiar.onclick = async ()=>{
 
-    if (!ultimoCodigo) return;
+    if(!ultimoCodigo) return;
 
     await navigator.clipboard.writeText(ultimoCodigo);
 
-    copiar.innerText = "✅ Copiado";
+    copiar.innerText="✅ Copiado";
 
-    setTimeout(() => {
-        copiar.innerText = "📋 Copiar";
+    setTimeout(()=>{
+
+        copiar.innerText="📋 Copiar ID";
+
     },1500);
 
 };
