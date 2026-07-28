@@ -1,20 +1,86 @@
-const linhas = text.split("\n");
+async function lerComprovante(imagem){
 
-const linhaID = linhas.find(l =>
-    l.toUpperCase().includes("ID:")
-);
+    status.innerText = "🤖 Lendo comprovante...";
 
-if (!linhaID) {
-    codigoEncontrado = "";
-    codigoDiv.innerText = "ID não encontrado";
-    status.innerText = "❌";
-    return;
+    const resultado = await Tesseract.recognize(
+        imagem,
+        "eng",
+        {
+            logger: m => console.log(m)
+        }
+    );
+
+    const texto = resultado.data.text;
+
+    console.log(texto);
+
+    // Procura a linha que contém ID:
+    const linhas = texto.split("\n");
+
+    let codigo = "";
+
+    for(const linha of linhas){
+
+        const limpa = linha.replace(/\s+/g," ");
+
+        if(/ID/i.test(limpa)){
+
+            codigo = limpa
+                .replace(/.*ID[:\s]*/i,"")
+                .replace(/[^A-Z0-9]/gi,"")
+                .trim();
+
+            break;
+
+        }
+
+    }
+
+    // Caso não encontre pela palavra ID,
+    // procura um código alfanumérico grande.
+    if(codigo===""){
+
+        const encontrados = texto.match(/[A-Z0-9]{25,60}/g);
+
+        if(encontrados){
+
+            codigo = encontrados[0];
+
+        }
+
+    }
+
+    if(codigo===""){
+
+        document.getElementById("codigo").innerText="❌ ID não encontrado";
+
+        status.innerText="Tente aproximar mais o comprovante.";
+
+        return;
+
+    }
+
+    document.getElementById("codigo").innerText=codigo;
+
+    status.innerText="☁️ Enviando...";
+
+    const { error } = await supabase
+    .from("codigos")
+    .insert([
+        {
+            codigo:codigo
+        }
+    ]);
+
+    if(error){
+
+        console.error(error);
+
+        status.innerText="❌ Erro ao enviar";
+
+        return;
+
+    }
+
+    status.innerText="✅ Enviado com sucesso!";
 }
-
-codigoEncontrado = linhaID
-    .replace(/ID:/i, "")
-    .replace(/\s/g, "")
-    .trim();
-
-codigoDiv.innerText = codigoEncontrado;
-status.innerText = "✅ ID encontrado";
